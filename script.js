@@ -12,7 +12,7 @@ gallery.innerHTML = ""
 
 // Recupere les projets et les cree dans le DOM
 fetch("http://localhost:5678/api/works")
-.then(response => response.json())
+    .then(response => response.json())
     .then(data => {
         data.map(projet => {
             const element = document.createElement("figure")
@@ -22,13 +22,13 @@ fetch("http://localhost:5678/api/works")
         })
     })
     .catch(error => console.log("WORKS ERROR :", error))
-    
-    fetch("http://localhost:5678/api/categories")
+
+fetch("http://localhost:5678/api/categories")
     .then(response => response.json())
     .then(data => {
         const containerElement = document.createElement("div")
         containerElement.classList.add("menu-filter")
-        data = [{name:"Tous", id: -1}, ...data]
+        data = [{ name: "Tous", id: -1 }, ...data]
         data.forEach(categorie => {
             const categoryId = "" + categorie.id
             const element = document.createElement("button")

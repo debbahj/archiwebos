@@ -9,12 +9,15 @@ if (userToken) {
     window.location.href = "index.html"
 }
 else {
-console.log("allo");
+
+    console.log("allo");
+
     loginForm.onsubmit = (event) => {
         event.preventDefault()
         event.stopPropagation()
 
-console.log("click");
+        console.log("click");
+
         fetch("http://localhost:5678/api/users/login", {
             method: "post",
             headers: {
@@ -27,7 +30,9 @@ console.log("click");
         })
             .then(response => response.json())
             .then(data => {
+
                 console.log("data", data);
+
                 if (data.token) {
                     storage.setItem("token", data.token)
                     window.location.href = "index.html"
