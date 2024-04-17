@@ -5,40 +5,35 @@ const loginEmail = document.querySelector("#login-email")
 const loginPassword = document.querySelector("#login-password")
 const loginForm = document.querySelector(".login-form")
 
+// Login - Si deja logué, redirige vers page d'accueil
 if (userToken) {
     window.location.href = "index.html"
-}
-else {
-
-    console.log("allo");
-
+} else { // Sinon, procedure de loging
     loginForm.onsubmit = (event) => {
         event.preventDefault()
         event.stopPropagation()
 
-        console.log("click");
-
-        fetch("http://localhost:5678/api/users/login", {
+        fetch("http://localhost:5678/api/users/login", { // Envoie de la requête
             method: "post",
             headers: {
                 "content-type": "application/json"
             },
-            body: JSON.stringify({
+            body: JSON.stringify({ // Envoie du corps de la requête
                 email: loginEmail.value,
                 password: loginPassword.value
             })
         })
-            .then(response => response.json())
+            .then(response => response.json()) // Réponse de la requête
             .then(data => {
 
-                console.log("data", data);
+                console.log("data", data)
 
-                if (data.token) {
-                    storage.setItem("token", data.token)
-                    window.location.href = "index.html"
+                if (data.token) { // Si la requête a fonctionné
+                    storage.setItem("token", data.token) // Enregistre le token dans le localStorage
+                    window.location.href = "index.html" // Redirige vers page d'accueil
                 } else {
-                    console.log("Mauvais ID")
                     alert("Mauvais ID")
+                    console.log("Mauvais ID")
                 }
             })
             .catch(error => console.log("ERROR :", error))
