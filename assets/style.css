@@ -229,16 +229,13 @@ header nav ul {
 	display: none; /* Cache tant que pas connecté */
 	justify-content: center;
 	align-items: center;
-	position: absolute;
-	top: 0;
-	left: 0;
 	width: 100%;
 	height: 50px;
 	background-color: black;
+}
 
-	p {
-		color: white;
-	}
+.edition__box p {
+	color: white;
 }
 
 .login-box {
@@ -297,6 +294,11 @@ header nav ul {
 	border-color: #1D6154;
 }
 
+.filter:hover {
+	color: white;
+	background: #1d6154;
+}
+
 .click-away {
 	display: none;
 	align-items: center;
@@ -318,6 +320,5 @@ body {
 
 .wrapper {
 	flex: 1;
-	border: 1px dashed gray;
 	padding: 0 50px;
 }

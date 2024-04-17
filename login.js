@@ -3,16 +3,18 @@ import storage from "./libs/storage.js"
 const userToken = storage.getItem("token")
 const loginEmail = document.querySelector("#login-email")
 const loginPassword = document.querySelector("#login-password")
-const loginSubmit = document.querySelector("#login-submit")
+const loginForm = document.querySelector(".login-form")
 
 if (userToken) {
     window.location.href = "index.html"
 }
 else {
+console.log("allo");
+    loginForm.onsubmit = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
 
-
-    loginSubmit.onclick = (event) => {
-
+console.log("click");
         fetch("http://localhost:5678/api/users/login", {
             method: "post",
             headers: {
@@ -25,13 +27,13 @@ else {
         })
             .then(response => response.json())
             .then(data => {
+                console.log("data", data);
                 if (data.token) {
                     storage.setItem("token", data.token)
                     window.location.href = "index.html"
                 } else {
                     console.log("Mauvais ID")
                     alert("Mauvais ID")
-                    event.preventDefault()
                 }
             })
             .catch(error => console.log("ERROR :", error))

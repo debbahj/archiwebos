@@ -16,6 +16,7 @@ fetch("http://localhost:5678/api/works")
     .then(data => {
         data.map(projet => {
             const element = document.createElement("figure")
+            element.setAttribute("data-filter", projet.categoryId)
             element.innerHTML = `<img src="${projet.imageUrl}" alt="${projet.title}"> <figcaption>${projet.title}</figcaption>`
             gallery.appendChild(element)
         })
@@ -27,12 +28,26 @@ fetch("http://localhost:5678/api/works")
     .then(data => {
         const containerElement = document.createElement("div")
         containerElement.classList.add("menu-filter")
-
+        data = [{name:"Tous", id: -1}, ...data]
         data.forEach(categorie => {
+            const categoryId = "" + categorie.id
             const element = document.createElement("button")
             element.classList.add("filter")
-            // element.setAttribute("data-filter", categorie.name)
-            element.innerHTML = categorie.name
+            element.setAttribute("data-filter", categorie.id)
+            element.textContent = categorie.name
+            element.onclick = (event) => {
+                console.log(categorie.id);
+                console.log(event.target.textContent);
+                const figures = [...gallery.querySelectorAll("figure")]
+                figures.forEach(figure => {
+                    const figureId = figure.getAttribute("data-filter")
+                    if (categoryId === "-1" || categoryId === figureId) {
+                        figure.style.display = "block"
+                    } else {
+                        figure.style.display = "none"
+                    }
+                })
+            }
             containerElement.appendChild(element)
         })
         portfolioTitle.insertAdjacentElement("afterend", containerElement)
