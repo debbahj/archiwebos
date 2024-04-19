@@ -372,6 +372,11 @@ header nav ul {
 	height: 35px;
 }
 
+input#login-email,
+input#login-password {
+	padding-left: 1rem;
+}
+
 .login-forgot {
 	text-align: center;
 }
@@ -398,7 +403,8 @@ header nav ul {
 	border-color: #1D6154;
 }
 
-.filter:hover {
+.filter:hover,
+.active {
 	color: white;
 	background: #1d6154;
 }

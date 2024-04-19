@@ -42,9 +42,11 @@ fetch("http://localhost:5678/api/categories")
             element.classList.add("filter") // lui donne une classe 'filter'
             element.setAttribute("data-filter", categorie.id) // lui donne l'id de la categorie
             element.textContent = categorie.name // Ajoute le nom de la categorie
-            element.onclick = (event) => { // Evenement qu click du filtre
+            categorie.id === -1 ? element.classList.add("active") : null // Si l'id de la categorie est -1, ajoute la classe 'active'
+            element.onclick = (event) => { // Evenement au clique du filtre
                 console.log(categorie.id) // Affiche l'id de la categorie
                 console.log(event.target.textContent) // Affiche le nom de la categorie
+
                 const figures = [...gallery.querySelectorAll("figure")] // Recupere tous les projets dans un tableau
                 figures.forEach(figure => { // Boucle sur les projets
                     const figureId = figure.getAttribute("data-filter") // Recupere l'id du projet
@@ -52,6 +54,15 @@ fetch("http://localhost:5678/api/categories")
                         figure.style.display = "block" // Affiche le projet
                     } else {
                         figure.style.display = "none" // Masque le projet
+                    }
+                })
+
+                const filterButtons = containerElement.querySelectorAll(".filter") // Recupere tous les filtres
+                filterButtons.forEach(button => {
+                    if (button === event.target) { // Si le bouton cliqué correspond à celui du filtre
+                        button.classList.add("active")
+                    } else {
+                        button.classList.remove("active")
                     }
                 })
             }
