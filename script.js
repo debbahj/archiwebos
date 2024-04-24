@@ -1,15 +1,16 @@
 import storage from "./libs/storage.js"
+import {loadModal} from "./modalEdition.js"
 
 const userToken = storage.getItem("token")
 const logIn = document.querySelector('.login')
 const logOut = document.querySelector('.logout')
 const editionBox = document.querySelector(".edition__box")
+const editionBtn = document.querySelector(".modify")
 
-
-const portfolioTitle = document.querySelector("#portfolio h2")
 const gallery = document.querySelector("#portfolio .gallery")
 gallery.innerHTML = ""
 
+//! *********** GALLERY ***********
 // Récuperation des projets et les affiches dans le DOM
 fetch("http://localhost:5678/api/works")
     .then(response => response.json())
@@ -18,11 +19,15 @@ fetch("http://localhost:5678/api/works")
             const element = document.createElement("figure") // Crée l'element figure
             element.setAttribute("data-filter", projet.categoryId) // Attribue le data-filter avec l'id de la categorie
             element.innerHTML = `<img src="${projet.imageUrl}" alt="${projet.title}"> <figcaption>${projet.title}</figcaption>` // Ajoute l'image et le titre
-            gallery.appendChild(element) // Ajoute l'element figure dans le DOM
+            gallery.appendChild(element) // Ajoute l'element figure dans le DOM (emplacement de la gallery)
         })
+        if (userToken) {
+            loadModal(data)
+        }
     })
     .catch(error => console.log("WORKS ERROR :", error))
 
+//! *********** FILTRES ***********
 /*
 Recuperation des categories depuis l'API
 Pour chaque categorie, on crée un bouton dans un conteneur
@@ -68,10 +73,11 @@ fetch("http://localhost:5678/api/categories")
             }
             containerElement.appendChild(element) // Ajoute le bouton dans le conteneur
         })
-        portfolioTitle.insertAdjacentElement("afterend", containerElement) // Ajoute le conteneur à la fin du titre
+        gallery.insertAdjacentElement("beforebegin", containerElement) // Ajoute le conteneur à la fin du titre
     })
     .catch(error => console.log("CATEGORIES ERROR :", error))
 
+//! *********** LOGIN ***********
 /*
 Ce bloc de code vérifie si le token de l'utilisateur existe dans le storage.
 S'il existe, il effectue les actions suivantes:
@@ -85,7 +91,8 @@ if (userToken) {
 
     logIn.style.display = "none" // Masque le bouton 'Login'
     logOut.style.display = "block" // Affiche le bouton 'Logout'
-    editionBox.style.display = "flex" // Affiche le mode édition
+    editionBox.style.display = "flex" // Affiche le bandeau édition
+    editionBtn.style.display = "flex" // Affiche le bouton 'Edition'
 
     // On clique sur "Logout", on efface le token du storage et on redirige vers la page d'accueil
     logOut.onclick = () => {
@@ -94,3 +101,4 @@ if (userToken) {
         window.location.href = "index.html" // Redirige vers la page d'accueil
     }
 }
+

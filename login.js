@@ -10,12 +10,12 @@ if (userToken) {
     window.location.href = "index.html"
 } else { // Sinon, procedure de loging
     loginForm.onsubmit = (event) => {
-        event.preventDefault()
-        event.stopPropagation()
         // 'preventDefault()' empêche le comportement de soumission par défaut du formulaire.
         //    Cela signifie que le navigateur ne lui enverra pas les données du formulaire au serveur et ne se rechargera pas.
         // 'stopPropagation()' empêche l'événement de se propager jusqu'au haut de l'arborescence DOM.
         //    Cela signifie que les autres gestionnaires d'événements plus haut dans l'arborescence DOM ne les recevront pas.
+        event.preventDefault()
+        event.stopPropagation()
 
         fetch("http://localhost:5678/api/users/login", { // Envoie de la requête
             method: "post",
@@ -29,8 +29,6 @@ if (userToken) {
         })
             .then(response => response.json()) // Réponse de la requête
             .then(data => {
-
-                console.log("data", data)
 
                 if (data.token) { // Si la requête a fonctionné
                     storage.setItem("token", data.token) // Enregistre le token dans le localStorage
