@@ -457,7 +457,6 @@ body {
 }
 
 /*! ******* MODAL ******* */
-/* .modal * {outline: 1px dashed red;} */
 
 .modal {
 	display: none;
@@ -548,8 +547,8 @@ body {
 }
 
 .modal__separator {
-	width: 80%;
-	height: 2px;
+	width: 100%;
+	height: 1px;
 	margin: 0.5rem;
 	border-radius: 5px;
 	background: lightgrey;
@@ -561,4 +560,79 @@ body {
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+}
+
+/*! ******* MODAL PHOTO ******* */
+
+.modal__prev {
+	position: absolute;
+    font-size: 22px;
+    top: 1.25rem;
+    left: 1.25rem;
+    cursor: pointer;
+}
+
+.modal__photo {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 1rem;
+	width: 100%;
+	max-height: calc(100% - 220px);
+}
+
+.modal__form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+	width: 100%;
+	padding: 15px 0;
+	border-radius: 5px;
+	background: #e8f1f6;
+}
+
+.modal__form p {
+	font-size: 11px;
+	color: gray;
+}
+
+.form-img {
+	font-size: 64px;
+	color: #b9c5cc;
+}
+
+#upload-photo-label {
+	cursor: pointer;
+	text-align: center;
+	align-content: center;
+	width: 180px;
+	height: 35px;
+	border: none;
+	border-radius: 60px;
+	color: #306685;
+	background: #cbd6dc;
+}
+
+.title-photo-box, .filter-photo-box {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+#title-photo, #filter-photo,
+#title-photo:focus, #filter-photo:focus,
+#title-photo:active, #filter-photo:active {
+	border: none;
+	outline: none;
+	background: none;
+	height: 50px;
+	padding: 0 1rem;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.modal2 input[type="submit"] {
+	/* Couleur grise lorsque aucun element n'est ajouté */
+	background-color: #a7a7a7;
 }

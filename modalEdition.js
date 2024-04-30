@@ -1,18 +1,18 @@
 export const loadModal = (projects) => {
     const editionBtn = document.querySelector(".modify")
     const editionModal = document.querySelector(".modal")
+    const editionModal2 = document.querySelector(".modal2")
     const editionClose = editionModal.querySelector(".modal__close")
+    const editionClose2 = editionModal2.querySelector(".modal__close")
+    const editionPrev = editionModal2.querySelector(".modal__prev")
     const editionSubmit = editionModal.querySelector(".modal__submit")
     const editionContainer = editionModal.querySelector(".modal__container")
-
-    /*
-    COMMENTAIRES:
-    */
+    const editionContainer2 = editionModal2.querySelector(".modal__container2")
 
     function closeModal () { // Function fermant la modale
-        if (editionModal.style.display === "flex") {
             editionModal.style.display = "none"
-        }
+            editionModal2.style.display = "none"
+            document.body.style.overflowY = "auto"
     }
     const reload = () => {
         editionModal.style.display = "flex"
@@ -33,6 +33,7 @@ export const loadModal = (projects) => {
         })
     }
     editionBtn.onclick = () => { // On clique sur le bouton 'Edition', on ouvre la modale
+        document.body.style.overflowY = "hidden"
         reload()
     }
 
@@ -40,12 +41,33 @@ export const loadModal = (projects) => {
         closeModal()
     }
 
+    editionClose2.onclick = () => { // On clique sur le bouton 'X', on ferme la modale
+        closeModal()
+    }
+
     editionModal.addEventListener("click", (event) => { // On clique en dehors de la modale pour la fermer
-            closeModal()
+        closeModal()
     })
 
     editionContainer.addEventListener("click", (event) => {
         event.stopPropagation()
-        console.log(editionContainer);
+    })
+
+    editionSubmit.addEventListener("click", (event) => {
+        editionModal.style.display = "none"
+        editionModal2.style.display = "flex"
+    })
+
+    editionPrev.addEventListener("click", (event) => {
+        editionModal2.style.display = "none"
+        editionModal.style.display = "flex"
+    })
+
+    editionModal2.addEventListener("click", (event) => {
+        closeModal()
+    })
+
+    editionContainer2.addEventListener("click", (event) => {
+        event.stopPropagation()
     })
 }
