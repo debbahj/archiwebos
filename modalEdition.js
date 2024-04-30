@@ -27,7 +27,17 @@ export const loadModal = (projects) => {
             const deleteBtn = elementDiv.querySelector(".trash")
             const onDelete = (event) => {
                 event.stopPropagation()
-                console.log("delete");
+                fetch(`http://localhost:5678/api/works/${project.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(() => {
+                    window.location.reload()
+                    alert(`L'element ${project.id} à été supprimé`);
+                })
+                .catch(error => console.log("DELETE ERROR :", error))
             }
             deleteBtn.addEventListener ("click", onDelete)
         })
