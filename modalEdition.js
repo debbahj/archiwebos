@@ -25,23 +25,57 @@ export const loadModal = (projects) => {
             <i class="fas fa-trash-can trash"></i>` // Ajoute l'image et le titre
             gallery.appendChild(elementDiv)
             const deleteBtn = elementDiv.querySelector(".trash")
+
+            // ! *********** DELETE WORKS ***********
+
             const onDelete = (event) => {
                 event.stopPropagation()
+                const token = sessionStorage.getItem("token")
+
                 fetch(`http://localhost:5678/api/works/${project.id}`, {
                     method: "DELETE",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `${token}`
                     }
                 })
+                .then(response => response.json())
                 .then(() => {
-                    window.location.reload()
-                    alert(`L'element ${project.id} à été supprimé`);
+                    // window.location.reload()
+                    // alert(`L'element ${project.id} à été supprimé`)
                 })
                 .catch(error => console.log("DELETE ERROR :", error))
             }
             deleteBtn.addEventListener ("click", onDelete)
         })
     }
+
+    //! *********** MODAL UPLOAD PHOTO ***********
+
+    const uploadPhoto = editionModal2.querySelector("#upload-photo")
+    const uploadPhotoTitle = editionModal2.querySelector("#title-photo")
+    const uploadPhotoCategory = editionModal2.querySelector("#filter-photo")
+
+    editionSubmit.addEventListener("click", event => {
+        event.preventDefault()
+
+        
+        fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            body: JSON.stringify({
+                "imageUrl": uploadPhoto.value,
+                "title": uploadPhotoTitle.value,
+                "categoryId": uploadPhotoCategory.value,
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log("DATA : ", data))
+        .catch(error => console.log("UPLOAD ERROR : ", error))
+    })
+
+
+    //! AFFICHAGE ET FERMETURE DES MODALES
+
     editionBtn.onclick = () => { // On clique sur le bouton 'Edition', on ouvre la modale
         document.body.style.overflowY = "hidden"
         reload()
