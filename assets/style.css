@@ -515,7 +515,7 @@ body {
 	max-height: calc(100% - 220px);
 }
 
-.modal__content--container {
+.modal__main--container {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
 	align-items: start;
@@ -524,18 +524,18 @@ body {
 	gap: 0.6rem;
 }
 
-.modal__content--img {
+.modal__main--img {
 	position: relative;
 	aspect-ratio: 3/4;
 }
 
-.modal__content--img img {
+.modal__main--img img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 }
 
-.modal__content--img .trash {
+.modal__main--img .trash {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -572,7 +572,7 @@ body {
     cursor: pointer;
 }
 
-.modal__photo {
+.modal__main {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
@@ -581,7 +581,7 @@ body {
 	max-height: calc(100% - 220px);
 }
 
-.modal__form {
+.modal__main form {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

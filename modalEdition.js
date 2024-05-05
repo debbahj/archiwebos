@@ -1,28 +1,72 @@
-export const loadModal = (projects) => {
-    const editionBtn = document.querySelector(".modify")
-    const editionModal = document.querySelector(".modal")
-    const editionModal2 = document.querySelector(".modal2")
-    const editionClose = editionModal.querySelector(".modal__close")
-    const editionClose2 = editionModal2.querySelector(".modal__close")
-    const editionPrev = editionModal2.querySelector(".modal__prev")
-    const editionSubmit = editionModal.querySelector(".modal__submit")
-    const editionContainer = editionModal.querySelector(".modal__container")
-    const editionContainer2 = editionModal2.querySelector(".modal__container2")
+import { createModal, closeModals, getModalMain, getModalSubmit, openModal } from "./modal.js"
+import storage from "./libs/storage.js"
 
-    function closeModal () { // Function fermant la modale
-            editionModal.style.display = "none"
-            editionModal2.style.display = "none"
-            document.body.style.overflowY = "auto"
-    }
-    const reload = () => {
-        editionModal.style.display = "flex"
-        const gallery = editionContainer.querySelector(".modal__content--container")
+export const loadModals = (projects, reloadGallery) => {
+    const f = new FormData()
+    f.append("image", "image")
+    f.append("title", "title")
+
+    console.log("LOAD MODAL")
+
+    const editionModal = createModal({
+        title: "Galerie photo",
+        parent: document.body,
+        validateText: "Ajouter une photo"
+    })
+
+    getModalMain(editionModal).innerHTML = `
+        <div class="modal__main--container"></div>
+    `
+
+    const editionModal2 = createModal({
+        title:"Ajout Photo",
+        parent: document.body,
+        useHistory: true,
+        modalHistory: editionModal,
+        validateText: "Valider"
+    })
+
+    getModalMain(editionModal2).innerHTML = `
+        <form action="#" method="post" class="modal__form">
+
+            <div class="modal__input--img">
+                <i class="far fa-image form-img"></i>
+                <label for="image" class="button">+ Ajouter photo</label>
+                <input type="file" id="image" accept="image/png, image/jpeg" hidden>
+                <p class="note">jpg, png : 4Mo max</p>
+            </div>
+
+            <div class="modal__input--title label-input">
+                <label class="modal__label" for="photo-title">Titre</label>
+                <input type="text" name="title" id="photo-title" class="modal__input">
+            </div>
+
+            <div class="modal__input--category label-input">
+                <label class="modal__label" for="photo-filter" id="photo-filter-label">Catégorie</label>
+                <select name="photo-filter" id="photo-filter" class="modal__input">
+                    <option value="filtre 1"> </option>
+                    <option value="1">Objets</option>
+                    <option value="2">Appartements</option>
+                    <option value="3">Hotels &amp; restaurants</option>
+                </select>
+            </div>
+
+        </form>
+    `
+
+    const reloadGalleryContent = () => {
+        console.log("reload gallery content")
+        openModal(editionModal)
+        const gallery = getModalMain(editionModal).querySelector(".modal__main--container")
         gallery.innerHTML = ""
         projects.map(project => {
             const elementDiv = document.createElement("div")
-            elementDiv.classList.add("modal__content--img")
-            elementDiv.innerHTML = `<img src="${project.imageUrl}" alt="${project.title}">
-            <i class="fas fa-trash-can trash"></i>` // Ajoute l'image et le titre
+            elementDiv.classList.add("modal__main--img")
+            elementDiv.innerHTML = `
+                <img src="${project.imageUrl}"
+                alt="${project.title}">
+                <i class="fas fa-trash-can trash"></i>
+            ` // Ajoute l'image et le titre
             gallery.appendChild(elementDiv)
             const deleteBtn = elementDiv.querySelector(".trash")
 
@@ -32,17 +76,23 @@ export const loadModal = (projects) => {
                 event.stopPropagation()
                 const token = sessionStorage.getItem("token")
 
-                fetch(`http://localhost:5678/api/works/${project.id}`, {
+                fetch(`http://localhost:5678/api/works/${project.id}`,
+                {
                     method: "DELETE",
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `${token}`
+                        "Authorization": `Bearer ${token}`,
+                        "content-type": "application/json"
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok && response.status !== 204) {
+                        throw new Error("HTTP error " + response.status)
+                    }
+                })
                 .then(() => {
-                    // window.location.reload()
-                    // alert(`L'element ${project.id} à été supprimé`)
+                    // closeModals()
+                    // reloadGallery()
+                    // reloadGalleryContent()
                 })
                 .catch(error => console.log("DELETE ERROR :", error))
             }
@@ -51,67 +101,63 @@ export const loadModal = (projects) => {
     }
 
     //! *********** MODAL UPLOAD PHOTO ***********
-
-    const uploadPhoto = editionModal2.querySelector("#upload-photo")
-    const uploadPhotoTitle = editionModal2.querySelector("#title-photo")
-    const uploadPhotoCategory = editionModal2.querySelector("#filter-photo")
-
-    editionSubmit.addEventListener("click", event => {
+    getModalSubmit(editionModal).addEventListener("click", event => {
         event.preventDefault()
+        openModal(editionModal2)
+    })
 
-        
-        fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            body: JSON.stringify({
-                "imageUrl": uploadPhoto.value,
-                "title": uploadPhotoTitle.value,
-                "categoryId": uploadPhotoCategory.value,
+    getModalSubmit(editionModal2).addEventListener("click", event => {
+        const uploadPhoto = editionModal2.querySelector("#image")
+        const uploadPhotoTitle = editionModal2.querySelector("#photo-title")
+        const uploadPhotoCategory = editionModal2.querySelector("#photo-filter")
+        console.log("UPLOAD PHOTO : ",
+            uploadPhoto.value,
+            uploadPhotoTitle.value,
+            uploadPhotoCategory.value
+        )
+        if (!uploadPhoto || !uploadPhoto.files.length>0 || !uploadPhoto.files[0] ||
+            !uploadPhotoTitle.value.length>3 ||
+            !uploadPhotoCategory.value.length>0
+        ) {
+            alert("Veuillez remplir les champs")
+        } else {
+            const token = storage.getItem("token")
+            const formData = new FormData()
+            formData.append("image", uploadPhoto.files[0])
+            formData.append("title", uploadPhotoTitle.value)
+            formData.append("category", +uploadPhotoCategory.value)
+
+            fetch("http://localhost:5678/api/works", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}`,},
+                body: formData
             })
-        })
-        .then(response => response.json())
-        .then(data => console.log("DATA : ", data))
-        .catch(error => console.log("UPLOAD ERROR : ", error))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status)
+                }
+                closeModals()
+                reloadGallery()
+                console.log("DATA : ", response)
+                // window.location.reload()
+            })
+            .catch(err => {
+                console.log("UPLOAD ERROR : ", err)
+            })
+        }
+        //     body: JSON.stringify({
+        //         "imageUrl": uploadPhoto.value,
+        //         "title": uploadPhotoTitle.value,
+        //         "categoryId": uploadPhotoCategory.value,
+        //     })
+        // })
+        // .then(response => response.json())
+        // .then(data => console.log("DATA : ", data))
+        // .catch(error => console.log("UPLOAD ERROR : ", error))
     })
 
 
     //! AFFICHAGE ET FERMETURE DES MODALES
-
-    editionBtn.onclick = () => { // On clique sur le bouton 'Edition', on ouvre la modale
-        document.body.style.overflowY = "hidden"
-        reload()
-    }
-
-    editionClose.onclick = () => { // On clique sur le bouton 'X', on ferme la modale
-        closeModal()
-    }
-
-    editionClose2.onclick = () => { // On clique sur le bouton 'X', on ferme la modale
-        closeModal()
-    }
-
-    editionModal.addEventListener("click", (event) => { // On clique en dehors de la modale pour la fermer
-        closeModal()
-    })
-
-    editionContainer.addEventListener("click", (event) => {
-        event.stopPropagation()
-    })
-
-    editionSubmit.addEventListener("click", (event) => {
-        editionModal.style.display = "none"
-        editionModal2.style.display = "flex"
-    })
-
-    editionPrev.addEventListener("click", (event) => {
-        editionModal2.style.display = "none"
-        editionModal.style.display = "flex"
-    })
-
-    editionModal2.addEventListener("click", (event) => {
-        closeModal()
-    })
-
-    editionContainer2.addEventListener("click", (event) => {
-        event.stopPropagation()
-    })
+    // On clique sur le bouton 'Edition', on ouvre la modale
+    document.querySelector(".modify").onclick = reloadGalleryContent
 }
