@@ -479,7 +479,7 @@ body {
 	width: 100%;
 	max-width: 640px;
 	height: 100%;
-	max-height: 600px;
+	max-height: 670px;
 	padding: 1rem 6rem;
 	gap: 1rem;
 	border-radius: 5px;
@@ -507,7 +507,7 @@ body {
 	padding: 2rem 0;
 }
 
-.modal__content {
+.modal__main {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
@@ -522,6 +522,11 @@ body {
 	overflow-y: auto;
 	width: 100%;
 	gap: 0.6rem;
+}
+
+.modal__main--container .note {
+	font-size: 11px;
+	color: gray;
 }
 
 .modal__main--img {
@@ -562,8 +567,6 @@ body {
 	width: 100%;
 }
 
-/*! ******* MODAL PHOTO ******* */
-
 .modal__prev {
 	position: absolute;
     font-size: 22px;
@@ -572,38 +575,47 @@ body {
     cursor: pointer;
 }
 
-.modal__main {
+/*! ******* MODAL PHOTO ******* */
+
+.modal__form {
 	display: flex;
 	flex-direction: column;
-	flex: 1;
-	gap: 1rem;
-	width: 100%;
-	max-height: calc(100% - 220px);
+	gap: 2rem;
 }
 
-.modal__main form {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: 0.5rem;
-	width: 100%;
-	padding: 15px 0;
-	border-radius: 5px;
-	background: #e8f1f6;
-}
-
-.modal__form p {
-	font-size: 11px;
-	color: gray;
-}
 
 .form-img {
 	font-size: 64px;
 	color: #b9c5cc;
 }
 
-#upload-photo-label {
+.modal__input {
+	border: none;
+	outline: none;
+	background: none;
+	height: 3rem;
+	padding: 0 1rem;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	
+}
+.label-input {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.modal__input--img {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 15px 0;
+	border-radius: 5px;
+	background: #e8f1f6;
+}
+
+.modal__input--img .button {
 	cursor: pointer;
 	text-align: center;
 	align-content: center;
@@ -613,26 +625,4 @@ body {
 	border-radius: 60px;
 	color: #306685;
 	background: #cbd6dc;
-}
-
-.title-photo-box, .filter-photo-box {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
-#title-photo, #filter-photo,
-#title-photo:focus, #filter-photo:focus,
-#title-photo:active, #filter-photo:active {
-	border: none;
-	outline: none;
-	background: none;
-	height: 50px;
-	padding: 0 1rem;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
-}
-
-.modal2 input[type="submit"] {
-	/* Couleur grise lorsque aucun element n'est ajouté */
-	background-color: #a7a7a7;
 }

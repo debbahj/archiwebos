@@ -145,15 +145,6 @@ export const loadModals = (projects, reloadGallery) => {
                 console.log("UPLOAD ERROR : ", err)
             })
         }
-        //     body: JSON.stringify({
-        //         "imageUrl": uploadPhoto.value,
-        //         "title": uploadPhotoTitle.value,
-        //         "categoryId": uploadPhotoCategory.value,
-        //     })
-        // })
-        // .then(response => response.json())
-        // .then(data => console.log("DATA : ", data))
-        // .catch(error => console.log("UPLOAD ERROR : ", error))
     })
 
 
