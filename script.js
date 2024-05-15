@@ -1,4 +1,5 @@
 import storage from "./libs/storage.js"
+import { removeModals } from "./modal.js"
 import {loadModals} from "./modalEdition.js"
 
 const userToken = storage.getItem("token")
@@ -9,6 +10,7 @@ const editionBtn = document.querySelector(".modify")
 const gallery = document.querySelector("#portfolio .gallery")
 
 const reloadGallery = async () => {
+    removeModals()
     gallery.innerHTML = ""
 
     // #region - GALLERY

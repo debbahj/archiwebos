@@ -1,5 +1,12 @@
 const modalManager = []
 
+export const removeModals = () => {
+    modalManager.forEach(element => {
+        element.remove()
+    })
+    modalManager.length = 0
+}
+
 export const closeModals = () => {
     modalManager.forEach(element => {
         element.style.display = "none"
@@ -15,10 +22,11 @@ export const openModal = (modal) => {
 
 export const createModal = ({
     title,
-    parent=null,
-    useHistory=false,
-    modalHistory=null,
-   validateText
+    parent = null,
+    useHistory = false,
+    modalHistory = null,
+    validateText,
+    validateSubmit = true
 }) => {
     const div = document.createElement("div")
     div.classList.add("modal")
@@ -38,10 +46,10 @@ export const createModal = ({
 
         <div class="modal__footer">
 			<div class="modal__separator"></div>
-			<input type="submit" class="modal__submit" value="${validateText}">
+			<input type="${validateSubmit ? "submit" : "button"}" class="modal__submit" value="${validateText}">
 		</div>
     </div>`
-    
+
     const closeBtn = div.querySelector(".modal__close")
     closeBtn.addEventListener("click", closeModals)
     div.addEventListener("click", closeModals)
@@ -56,7 +64,7 @@ export const createModal = ({
             openModal(modalHistory)
         })
     }
-    
+
     if (parent) parent.appendChild(div)
     console.log("MODAL : ", div, title, parent)
 

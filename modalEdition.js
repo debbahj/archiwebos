@@ -11,7 +11,8 @@ export const loadModals = (projects, reloadGallery) => {
     const editionModal = createModal({
         title: "Galerie photo",
         parent: document.body,
-        validateText: "Ajouter une photo"
+        validateText: "Ajouter une photo",
+        validateSubmit: false
     })
 
     getModalMain(editionModal).innerHTML = `
@@ -19,7 +20,7 @@ export const loadModals = (projects, reloadGallery) => {
     `
 
     const editionModal2 = createModal({
-        title:"Ajout Photo",
+        title: "Ajout Photo",
         parent: document.body,
         useHistory: true,
         modalHistory: editionModal,
@@ -30,10 +31,13 @@ export const loadModals = (projects, reloadGallery) => {
         <form action="#" method="post" class="modal__form">
 
             <div class="modal__input--img">
-                <i class="far fa-image form-img"></i>
-                <label for="image" class="button">+ Ajouter photo</label>
-                <input type="file" id="image" accept="image/png, image/jpeg" hidden>
-                <p class="note">jpg, png : 4Mo max</p>
+                <div class="form-empty">
+                    <i class="far fa-image form-preview-icon"></i>
+                    <label for="image" class="button file-requester-button" tabIndex="0">+ Ajouter photo</label>
+                    <input type="file" id="image" accept="image/png, image/jpeg" hidden>
+                    <p class="note">jpg, png : 4Mo max</p>
+                </div>
+                <img class="form-preview-img">
             </div>
 
             <div class="modal__input--title label-input">
@@ -77,26 +81,26 @@ export const loadModals = (projects, reloadGallery) => {
                 const token = sessionStorage.getItem("token")
 
                 fetch(`http://localhost:5678/api/works/${project.id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "content-type": "application/json"
-                    }
-                })
-                .then(response => {
-                    if (!response.ok && response.status !== 204) {
-                        throw new Error("HTTP error " + response.status)
-                    }
-                })
-                .then(() => {
-                    // closeModals()
-                    // reloadGallery()
-                    // reloadGalleryContent()
-                })
-                .catch(error => console.log("DELETE ERROR :", error))
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "content-type": "application/json"
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok && response.status !== 204) {
+                            throw new Error("HTTP error " + response.status)
+                        }
+                    })
+                    .then(() => {
+                        closeModals()
+                        // reloadGallery()
+                        window.location
+                    })
+                    .catch(error => console.log("DELETE ERROR :", error))
             }
-            deleteBtn.addEventListener ("click", onDelete)
+            deleteBtn.addEventListener("click", onDelete)
         })
     }
 
@@ -106,32 +110,71 @@ export const loadModals = (projects, reloadGallery) => {
         openModal(editionModal2)
     })
 
-    getModalSubmit(editionModal2).addEventListener("click", event => {
-        const uploadPhoto = editionModal2.querySelector("#image")
-        const uploadPhotoTitle = editionModal2.querySelector("#photo-title")
-        const uploadPhotoCategory = editionModal2.querySelector("#photo-filter")
+    const submitAddPhoto = getModalSubmit(editionModal2)
+    submitAddPhoto.disabled = true
+    const uploadForm = editionModal2.querySelector(".modal__form")
+    const uploadPhoto = editionModal2.querySelector("#image")
+    const uploadPreviewEmpty = editionModal2.querySelector(".form-empty")
+    const uploadPreviewImg = editionModal2.querySelector(".form-preview-img")
+    const uploadPhotoTitle = editionModal2.querySelector("#photo-title")
+    const uploadPhotoCategory = editionModal2.querySelector("#photo-filter")
+
+    const validateForm = () => {
+        const disabled = (
+            !uploadPhoto || uploadPhoto.files.length < 1 || !uploadPhoto.files[0] ||
+            uploadPhotoTitle.value.length < 3 ||
+            uploadPhotoCategory.value.length < 1 || uploadPhotoCategory.value === "filtre 1"
+        )
+
+        submitAddPhoto.disabled = disabled
+        return !disabled
+    }
+
+    uploadForm.onsubmit = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        validateForm()
+    }
+
+    uploadPhotoTitle.oninput = validateForm
+    uploadPhotoCategory.onchange = validateForm
+
+    uploadPhoto.onchange = (e) => {
+        if (e.target.files.length < 1) {
+            uploadPreviewEmpty.style.display = "block"
+            uploadPreviewImg.style.display = "none"
+        } else {
+            uploadPreviewEmpty.style.display = "none"
+            uploadPreviewImg.style.display = "block"
+            const fileReader = new FileReader()
+            fileReader.onload = (event) => {
+                uploadPreviewImg.src = event.target.result
+            }
+            fileReader.readAsDataURL(e.target.files[0])
+        }
+        validateForm()
+    }
+
+    submitAddPhoto.addEventListener("click", event => {
+        event.preventDefault()
+        if (!validateForm()) return
         console.log("UPLOAD PHOTO : ",
             uploadPhoto.value,
             uploadPhotoTitle.value,
             uploadPhotoCategory.value
         )
-        if (!uploadPhoto || !uploadPhoto.files.length>0 || !uploadPhoto.files[0] ||
-            !uploadPhotoTitle.value.length>3 ||
-            !uploadPhotoCategory.value.length>0
-        ) {
-            alert("Veuillez remplir les champs")
-        } else {
-            const token = storage.getItem("token")
-            const formData = new FormData()
-            formData.append("image", uploadPhoto.files[0])
-            formData.append("title", uploadPhotoTitle.value)
-            formData.append("category", +uploadPhotoCategory.value)
 
-            fetch("http://localhost:5678/api/works", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${token}`,},
-                body: formData
-            })
+        const token = storage.getItem("token")
+        const formData = new FormData()
+        formData.append("image", uploadPhoto.files[0])
+        formData.append("title", uploadPhotoTitle.value)
+        formData.append("category", +uploadPhotoCategory.value)
+
+        fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}`, },
+            body: formData
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error("HTTP error " + response.status)
@@ -139,12 +182,10 @@ export const loadModals = (projects, reloadGallery) => {
                 closeModals()
                 reloadGallery()
                 console.log("DATA : ", response)
-                // window.location.reload()
             })
             .catch(err => {
                 console.log("UPLOAD ERROR : ", err)
             })
-        }
     })
 
 
