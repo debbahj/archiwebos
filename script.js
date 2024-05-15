@@ -80,12 +80,15 @@ const loadFilters = async () => {
                         }
                     })
                 }
+                if (userToken) {
+                    containerElement.removeChild(element)
+                }
                 containerElement.appendChild(element) // Ajoute le bouton dans le conteneur
             })
             gallery.insertAdjacentElement("beforebegin", containerElement) // Ajoute le conteneur à la fin du titre
         })
         .catch(error => console.log("CATEGORIES ERROR :", error)))
-}
+    }
 // #endregion
 
 await loadFilters()
