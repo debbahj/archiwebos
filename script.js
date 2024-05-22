@@ -43,6 +43,7 @@ const loadFilters = async () => {
     On ajoute le bouton dans le conteneur
     On ajoute le conteneur après le titre du portfolio
     */
+    if (userToken) return
     return (fetch("http://localhost:5678/api/categories")
         .then(response => response.json())
         .then(data => {
@@ -79,9 +80,6 @@ const loadFilters = async () => {
                             button.classList.remove("active")
                         }
                     })
-                }
-                if (userToken) {
-                    containerElement.removeChild(element)
                 }
                 containerElement.appendChild(element) // Ajoute le bouton dans le conteneur
             })

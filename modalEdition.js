@@ -95,8 +95,7 @@ export const loadModals = (projects, reloadGallery) => {
                     })
                     .then(() => {
                         closeModals()
-                        // reloadGallery()
-                        window.location
+                        reloadGallery()
                     })
                     .catch(error => console.log("DELETE ERROR :", error))
             }
